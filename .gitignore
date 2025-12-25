@@ -56,7 +56,7 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Temporary files
+# Temporary files 
 tmp/
 temp/
 *.tmp
