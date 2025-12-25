@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial News Impact Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><span class="icon">📊</span>Financial News Impact Analyzer</h1>
+                <p class="subtitle">Real-time analysis of global financial institutions' impact on Indian markets</p>
+            </div>
+            <div class="status-indicator" id="statusIndicator">
+                <div class="status-dot offline"></div>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="control-group">
+                <label for="timeframe">Timeframe:</label>
+                <select id="timeframe" class="select">
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="48h" selected>Last 48 Hours</option>
+                    <option value="72h">Last 72 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <button id="refreshBtn" class="btn btn-primary">
+                    <span class="btn-icon">🔄</span>
+                    Refresh Data
+                </button>
+                <button id="autoRefreshBtn" class="btn btn-secondary">
+                    <span class="btn-icon">⏰</span>
+                    Auto-Refresh: <span id="autoRefreshStatus">OFF</span>
+                </button>
+            </div>
+            <div class="last-update">
+                <span class="icon">⏱️</span>
+                Last updated: <span id="lastUpdate">Never</span>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state" style="display: none;">
+            <div class="spinner"></div>
+            <h3>Analyzing financial news...</h3>
+            <p>This may take a moment as we fetch and process the latest data</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <div class="error-icon">⚠️</div>
+            <h3>Unable to Load Data</h3>
+            <p id="errorMessage">Please check your connection and try again</p>
+            <button onclick="fetchNews()" class="btn btn-primary" style="margin-top: 1rem;">
+                Retry
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" style="display: none;">
+            <!-- Summary Section -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">📰</span>Market Summary</h2>
+                <ul id="summaryList" class="summary-list">
+                    <!-- Summary items will be inserted here -->
+                </ul>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalArticles">0</span>
+                        <span class="stat-label">Articles Analyzed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalInstitutions">0</span>
+                        <span class="stat-label">Institutions Tracked</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="positiveCount">0</span>
+                        <span class="stat-label">Positive Signals</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="negativeCount">0</span>
+                        <span class="stat-label">Negative Signals</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Chart -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">📈</span>Impact Score Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Institution Rankings -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">🏆</span>Institution Impact Rankings</h2>
+                <div class="table-responsive">
+                    <table class="impact-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Institution</th>
+                                <th>Impact Score</th>
+                                <th>Sentiment</th>
+                                <th>Mentions</th>
+                                <th>India Linkage</th>
+                                <th>24h Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="institutionsTableBody">
+                            <!-- Rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">🔍</span>Top 3 Detailed Analysis</h2>
+                <div id="analysisGrid" class="analysis-grid">
+                    <!-- Analysis items will be inserted here -->
+                </div>
+            </div>
+
+            <!-- AI Assistant Chatbot -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">🤖</span>AI Market Assistant</h2>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message bot">
+                            <strong>Assistant:</strong>
+                            <p>Hello! I'm your AI market assistant. Ask me about specific institutions, market trends, or get insights from the latest financial news. How can I help you today?</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            class="chat-input" 
+                            placeholder="Ask about institutions, trends, or market sentiment..."
+                            onkeypress="if(event.key === 'Enter') sendChatMessage()"
+                        >
+                        <button onclick="sendChatMessage()" class="btn btn-primary">
+                            <span class="btn-icon">📤</span>
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Financial News Impact Analyzer - Powered by Claude AI & Real-time News APIs</p>
+            <p>Data updates every 30 minutes | For informational purposes only</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/websocket.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
