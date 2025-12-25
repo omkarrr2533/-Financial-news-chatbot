@@ -61,7 +61,7 @@ class Database:
                 )
             ''')
             
-            # Create indexes for performance
+            # Create indexes for performa 
             cursor.execute('''
                 CREATE INDEX IF NOT EXISTS idx_published 
                 ON articles(published_date DESC)
