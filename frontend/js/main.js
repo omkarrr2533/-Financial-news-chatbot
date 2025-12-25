@@ -26,7 +26,7 @@ function setupEventListeners() {
         });
     }
 
-    // Auto-refresh toggle
+  
     const autoRefreshBtn = document.getElementById('autoRefreshBtn');
     if (autoRefreshBtn) {
         autoRefreshBtn.addEventListener('click', toggleAutoRefresh);
