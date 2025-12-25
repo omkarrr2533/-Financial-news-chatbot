@@ -95,8 +95,7 @@ body {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
-
-/* Controls */
+ 
 .controls {
     display: flex;
     justify-content: space-between;
@@ -143,7 +142,7 @@ body {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Buttons */
+ 
 .btn {
     padding: 0.75rem 1.5rem;
     border: none;
