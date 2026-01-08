@@ -207,7 +207,7 @@ financial-news-bot/
 ├── .env.example               # Environment template
 ├── requirements.txt           # Dependencies
 ├── run.py                     # Entry point
-└── README.md                  # This file
+└── README.md                  # readme.md file -- these file 
 ```
 
 ## 🐛 Troubleshooting
