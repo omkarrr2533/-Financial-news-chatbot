@@ -215,7 +215,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Error State */
+ 
 .error-state {
     padding: 3rem;
     text-align: center;
@@ -314,7 +314,7 @@ body {
     padding: 1rem;
 }
 
-/* Table */
+
 .table-responsive {
     overflow-x: auto;
 }
